@@ -1,10 +1,10 @@
 import datetime
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app import models, schemas
+from app import insights, models, schemas
 from app.database import Base, engine, get_db
 
 Base.metadata.create_all(bind=engine)
@@ -38,3 +38,14 @@ def list_transactions(
     if end_date:
         query = query.where(models.Transaction.date <= end_date)
     return db.scalars(query.order_by(models.Transaction.date.desc())).all()
+@app.get("/insights/summary")
+def summary(
+    month: str = Query(pattern=r"^\d{4}-(0[1-9]|1[0-2])$"),
+    db: Session = Depends(get_db),
+):
+    return insights.monthly_summary(db, month)
+
+
+@app.get("/insights/anomalies")
+def anomalies(db: Session = Depends(get_db)):
+    return insights.find_anomalies(db)

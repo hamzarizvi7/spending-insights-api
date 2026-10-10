@@ -40,6 +40,6 @@ Response `200`:
 ```
 
 ### GET /insights/anomalies
-Flags transactions more than 3 standard deviations above their category's mean.
+Flags transactions more than 2 standard deviations above their category's mean.
 Response `200`: list of flagged transactions, each with a `reason` field.
-Note: needs at least 5 transactions in a category to be evaluated.
+Note: needs at least 6 transactions in a category to be evaluated.
